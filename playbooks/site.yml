@@ -1,0 +1,46 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: install updates
+    apt:
+      upgrade: dist
+      update_cache: true
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install updates
+    yum:
+      update_cache: true
+    when: ansible_distribution == "RedHat"
+
+
+- hosts: web_servers
+  become: true
+  tasks:
+
+  - name: install apache2 and php packages and update repository for Ubuntu
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php
+    when: ansible_distribution == "Ubuntu"
+
+  - name: install apache2 and php packages and update repository for redhat
+    yum:
+      name:
+        - httpd
+        - php
+    when: ansible_distribution == "RedHat"
+    
+- hosts: db_servers
+  become: true
+  tasks:
+  
+  - name: install mariadb package
+    dnf:
+      name: mariadb105-server
+      state: latest
+    when: ansible_distribution == "Amazon"
+      
